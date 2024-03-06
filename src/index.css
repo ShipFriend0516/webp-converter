@@ -27,6 +27,7 @@ h1 {
 }
 
 .dragPoint {
+  position: relative;
   color: gray;
   background-color: whitesmoke;
   padding: 60px 80px;
@@ -40,6 +41,8 @@ h1 {
   opacity: 0;
   width: 100%;
   height: 100%;
+  top: 0;
+  left: 0;
 }
 
 .setting {
