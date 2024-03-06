@@ -2,12 +2,25 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Hello World!</title>
-
+    <title>ImageToWebp</title>
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <div class="mainWrapper">
+      <div class="titleWrapper">
+        <h1>이미지 변환기</h1>
+        <p>변환할 이미지를 선택해주세요.</p>
+      </div>
+      <div class="dragPoint">
+        <input type="file" accept="image/*" onchange="convertImage(this)" />
+        클릭하거나 이미지를 드래그&드랍
+      </div>
+    </div>
+    <fieldset class="setting">
+      <label>
+        <span>이미지 -> WEBP</span>
+        <input role="switch" type="checkbox" />
+      </label>
+    </fieldset>
     <script type="module" src="/src/renderer.ts"></script>
   </body>
 </html>
