@@ -1,7 +1,7 @@
-import { app, webContents, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import * as path from "path";
 import convertToWebP from "./coverter";
-
+import os from "os";
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -9,6 +9,19 @@ if (require("electron-squirrel-startup")) {
 
 let direction = true;
 let progress = 0;
+let outputDir = path.join(os.homedir(), "Downloads");
+
+const handleFileOpen = async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    title: "PathSelecter",
+    defaultPath: path.join(os.homedir(), "Downloads"),
+    properties: ["openDirectory", "createDirectory"],
+    message: "변환된 이미지 파일의 저장 위치 지정",
+  });
+  if (!canceled) {
+    outputDir = filePaths[0];
+  }
+};
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
@@ -26,12 +39,18 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
+  // ipcMain.on("presetting", (event, path: string) => {
+  //   console.log(path);
+  //   outputDir = path;
+  // });
+
   ipcMain.on("toMain", (event, data: File[]) => {
     progress = 0;
     let convertSuccess = true;
+
     data.forEach((image: File) => {
       try {
-        convertToWebP(image, direction);
+        convertToWebP(image, direction, outputDir);
         progress++;
         mainWindow.webContents.send("update-counter", (progress / data.length) * 100);
         console.log(progress);
@@ -40,8 +59,10 @@ const createWindow = () => {
         convertSuccess = false;
       }
     });
+
     mainWindow.webContents.send("success", data[0].name, data.length, convertSuccess);
   });
+
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 };
@@ -50,6 +71,7 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  ipcMain.handle("presetting:openFileDialog", handleFileOpen);
   createWindow();
 });
 

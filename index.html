@@ -9,23 +9,28 @@
     <div class="mainWrapper">
       <div class="titleWrapper">
         <h1>이미지 변환기</h1>
-        <p id="message">변환할 이미지를 선택해주세요.</p>
+        <p id="message">변환할 이미지를 선택해주세요</p>
       </div>
+      <div class="dragPointWrapper">
+        <div class="dragPoint">
+          <input id="imageSelecter" type="file" accept="image/*" multiple />
+          클릭하거나 이미지를 드래그&드랍
+        </div>
+        <div class="progress">
+          <div id="bar" class="bar"></div>
+        </div>
+      </div>
+      <fieldset class="setting">
+        <label>
+          <span>Image > WEBP</span>
+          <input id="directionSwitch" role="switch" type="checkbox" checked />
+        </label>
+        <label class="outputLabel">
+          <button id="outputDir" role="directory" type="file" webkitdirectory>
+            <span>저장 위치 지정</span>
+          </button>
+        </label>
+      </fieldset>
     </div>
-    <div class="dragPointWrapper">
-      <div class="dragPoint">
-        <input id="imageSelecter" type="file" accept="image/*" multiple />
-        클릭하거나 이미지를 드래그&드랍
-      </div>
-      <div class="progress">
-        <div id="bar" class="bar"></div>
-      </div>
-    </div>
-    <fieldset class="setting">
-      <label>
-        <span>Image > WEBP</span>
-        <input id="directionSwitch" role="switch" type="checkbox" checked />
-      </label>
-    </fieldset>
   </body>
 </html>

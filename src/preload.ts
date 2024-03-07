@@ -26,3 +26,13 @@ contextBridge.exposeInMainWorld("api", {
 contextBridge.exposeInMainWorld("direction", {
   toggle: () => ipcRenderer.invoke("direction:toggle"),
 });
+
+contextBridge.exposeInMainWorld("presetting", {
+  // setOutDir: (channel: string, path: string) => {
+  //   const validChannels = ["presetting"];
+  //   if (validChannels.includes(channel)) {
+  //     ipcRenderer.send(channel, path);
+  //   }
+  // },
+  openFileDialog: () => ipcRenderer.invoke("presetting:openFileDialog"),
+});
