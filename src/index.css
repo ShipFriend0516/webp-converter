@@ -21,6 +21,12 @@ body {
   text-align: center;
 }
 
+.dragPointWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
 h1 {
   font-size: 2.25em;
   margin: 0;
@@ -43,6 +49,22 @@ h1 {
   height: 100%;
   top: 0;
   left: 0;
+}
+
+.progress {
+  position: relative;
+  height: 8px;
+  border-radius: 20px;
+  background-color: white;
+  overflow: hidden;
+}
+
+.bar {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgb(18, 152, 98);
 }
 
 .setting {

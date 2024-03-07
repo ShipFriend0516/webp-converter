@@ -5,22 +5,27 @@
     <title>ImageToWebp</title>
   </head>
   <body>
+    <script type="module" src="/src/renderer.ts"></script>
     <div class="mainWrapper">
       <div class="titleWrapper">
         <h1>이미지 변환기</h1>
-        <p>변환할 이미지를 선택해주세요.</p>
+        <p id="message">변환할 이미지를 선택해주세요.</p>
       </div>
+    </div>
+    <div class="dragPointWrapper">
       <div class="dragPoint">
-        <input type="file" accept="image/*" onchange="convertImage(this)" />
+        <input id="imageSelecter" type="file" accept="image/*" multiple />
         클릭하거나 이미지를 드래그&드랍
+      </div>
+      <div class="progress">
+        <div id="bar" class="bar"></div>
       </div>
     </div>
     <fieldset class="setting">
       <label>
-        <span>이미지 -> WEBP</span>
-        <input role="switch" type="checkbox" />
+        <span>Image > WEBP</span>
+        <input id="directionSwitch" role="switch" type="checkbox" checked />
       </label>
     </fieldset>
-    <script type="module" src="/src/renderer.ts"></script>
   </body>
 </html>
