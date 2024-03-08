@@ -11,6 +11,7 @@ if (require("electron-squirrel-startup")) {
 let direction = true;
 let progress = 0;
 let outputDir = path.join(os.homedir(), "Downloads");
+let compressRateLevel = 1; // default
 const store = new ElectronStore();
 
 const handleFileOpen = async () => {
@@ -28,13 +29,14 @@ const handleFileOpen = async () => {
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
+    width: 520,
+    height: 360,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
     },
   });
+  mainWindow.setResizable(false);
   outputDir = store.get("outputPath") as string;
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
@@ -42,18 +44,18 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
-  // ipcMain.on("presetting", (event, path: string) => {
-  //   console.log(path);
-  //   outputDir = path;
-  // });
+  ipcMain.on("presetting:setQuality", (event, quality: number) => {
+    compressRateLevel = quality;
+  });
 
   ipcMain.on("toMain", (event, data: File[]) => {
     progress = 0;
     let convertSuccess = true;
-
+    const compressRate = 70 + 10 * compressRateLevel;
+    console.log(`변환 설정 방향:${direction} 저장위치:${outputDir} 압축률:${compressRate}`);
     data.forEach((image: File) => {
       try {
-        convertToWebP(image, direction, outputDir);
+        convertToWebP(image, direction, outputDir, compressRate);
         progress++;
         mainWindow.webContents.send("update-counter", (progress / data.length) * 100);
         console.log("진행도", progress);

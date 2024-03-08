@@ -5,7 +5,8 @@ import path from "path";
 function convertToWebP(
   image: File,
   direction = true,
-  outputFolderPath = path.join(os.homedir(), "Downloads")
+  outputFolderPath = path.join(os.homedir(), "Downloads"),
+  compressRate: number
 ) {
   try {
     const imagePath: string = image.path;
@@ -16,7 +17,7 @@ function convertToWebP(
     const newFileName = fileName.slice(0, -path.extname(fileName).length);
     if (direction) {
       outputFilePath = `${outputFolderPath}/${"converted"}_${newFileName}.webp`;
-      sharp(imagePath).toFormat("webp").toFile(outputFilePath);
+      sharp(imagePath).webp({ quality: compressRate }).toFormat("webp").toFile(outputFilePath);
     } else {
       outputFilePath = `${outputFolderPath}/${"converted_"}${newFileName}.jpg`;
       sharp(imagePath).webp({ lossless: true }).toFormat("jpeg").toFile(outputFilePath);

@@ -30,6 +30,7 @@ contextBridge.exposeInMainWorld("direction", {
 
 contextBridge.exposeInMainWorld("presetting", {
   openFileDialog: () => ipcRenderer.invoke("presetting:openFileDialog"),
+  setQuality: (value: string) => ipcRenderer.send("presetting:setQuality", parseInt(value)),
 });
 
 contextBridge.exposeInMainWorld("file", {

@@ -75,7 +75,6 @@ window.api.onProgressUpdate((value: number) => {
 });
 
 const message = document.getElementById("message");
-
 window.api.onSuccess((value: string, length: number, isSuccess: boolean) => {
   if (isSuccess) {
     message.innerHTML = `${
@@ -85,4 +84,24 @@ window.api.onSuccess((value: string, length: number, isSuccess: boolean) => {
     message.innerHTML = "이미지 변환 실패";
   }
   message.style.color = isSuccess ? "seagreen" : "tomato";
+});
+
+const compressLevelBtn = document.getElementById("compressLevel");
+compressLevelBtn.addEventListener("click", (event) => {
+  const target = event.target as HTMLInputElement;
+  target.value = ((parseInt(target.value) + 1) % 3).toString();
+  window.presetting.setQuality(target.value);
+  switch (target.value) {
+    case "0":
+      target.innerHTML = "하";
+      break;
+    case "1":
+      target.innerHTML = "중";
+      break;
+    case "2":
+      target.innerHTML = "상";
+      break;
+    default:
+      break;
+  }
 });
