@@ -18,6 +18,13 @@ const dropZone = document.getElementById("dragPoint");
 dropZone.addEventListener("dragover", (e) => {
   e.preventDefault();
   e.dataTransfer.dropEffect = "copy";
+  dropZone.classList.add("dragover");
+  dropZone.innerHTML = "이미지를 업로드";
+});
+
+dropZone.addEventListener("dragleave", () => {
+  dropZone.classList.remove("dragover");
+  dropZone.innerHTML = "클릭하거나 이미지를 드래그&드랍";
 });
 
 dropZone.addEventListener("drop", (e) => {

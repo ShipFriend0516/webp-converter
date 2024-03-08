@@ -33,6 +33,7 @@ h1 {
 }
 
 .dragPoint {
+  width: 380px;
   position: relative;
   color: gray;
   background-color: whitesmoke;
@@ -40,6 +41,10 @@ h1 {
   border-radius: 10px;
   border: dotted 2px #e2bfb3;
   text-align: center;
+}
+
+#dragPoint.dragover {
+  background-color: rgb(188, 188, 188);
 }
 
 .dragPoint input {
@@ -61,6 +66,7 @@ h1 {
   border-radius: 20px;
   background-color: white;
   overflow: hidden;
+  box-shadow: inset 1px 1px 3px lightgray;
 }
 
 .bar {

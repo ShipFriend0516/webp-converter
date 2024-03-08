@@ -2,7 +2,7 @@
   "name": "webp-converter",
   "productName": "webp-converter",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "이미지를 webp 형식으로 변환하는 프로그램",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
