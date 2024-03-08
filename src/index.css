@@ -5,6 +5,7 @@ body {
   padding: 2rem;
   background-color: #f6f1e9;
 
+  position: relative;
   overflow-y: hidden;
 }
 
@@ -88,11 +89,10 @@ h1 {
 }
 
 label.outputLabel {
-  position: absolute;
+  /* position: absolute;
   left: 10px;
   top: 10px;
-  padding: 12px;
-  padding-top: 7px;
+  padding: 12px; */
 }
 
 input#outputDir {
@@ -127,8 +127,8 @@ input#outputDir {
   }
 }
 
-.outputLabel span {
-  text-align: right;
+.outputLabel #openOutputDir {
+  background-color: #e2bfb3;
 }
 
 label {
@@ -138,6 +138,34 @@ label {
   cursor: pointer;
   font-size: 0.7em;
   color: gray;
+}
+
+fieldset.dirSetting {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+fieldset.dirSetting label {
+}
+
+.setting #compressLevel {
+  border: 0.5px solid #e2bfb3;
+  background-color: #e2bfb3;
+  border-radius: 1.25em;
+
+  width: 24px;
+  cursor: pointer;
+  margin-left: 4px;
+  margin-right: 3px;
+  color: rgb(71, 71, 71);
+  font-weight: 300;
+  width: 2.25em;
+  height: 1.25em;
+  appearance: none;
+  &:hover {
+    box-shadow: 0 0 0 max(4px, 0.2em) lightgray;
+  }
 }
 
 [type="checkbox"] {
@@ -196,12 +224,6 @@ label {
 }
 
 /* Global CSS */
-body {
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
 
 fieldset {
   border: none;
@@ -209,25 +231,6 @@ fieldset {
   flex-direction: column;
   gap: 0.5rem;
   align-items: end;
-}
-
-.setting #compressLevel {
-  border: 0.5px solid #e2bfb3;
-  background-color: #e2bfb3;
-  border-radius: 1.25em;
-
-  width: 24px;
-  cursor: pointer;
-  margin-left: 4px;
-  margin-right: 3px;
-  color: rgb(71, 71, 71);
-  font-weight: 300;
-  width: 2.25em;
-  height: 1.25em;
-  appearance: none;
-  &:hover {
-    box-shadow: 0 0 0 max(4px, 0.2em) lightgray;
-  }
 }
 
 *,

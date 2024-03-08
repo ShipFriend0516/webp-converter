@@ -1,15 +1,34 @@
 import "./index.css";
 
 declare global {
+  interface ImageFile {
+    name: string;
+    path: string;
+    type: string;
+  }
   interface Window {
-    api: any;
-    direction: any;
-    presetting: any;
+    api: {
+      send: (channel: string, arr: ImageFile[]) => void;
+      onProgressUpdate: (callback: (value: number) => void) => void;
+      onSuccess: (callback: (value: string, length: number, isSuccess: boolean) => void) => void;
+    };
+    direction: {
+      toggle: () => void;
+    };
+    presetting: {
+      openOutputDirectory: () => void;
+      openFileDialog: () => void;
+      setQuality: (value: string) => void;
+    };
   }
 }
 
 document.getElementById("outputDir").addEventListener("click", () => {
   window.presetting.openFileDialog();
+});
+
+document.getElementById("openOutputDir").addEventListener("click", () => {
+  window.presetting.openOutputDirectory();
 });
 
 const dropZone = document.getElementById("dragPoint");
@@ -37,7 +56,6 @@ dropZone.addEventListener("drop", (e) => {
       path: file.path,
       type: file.type,
     }));
-    console.log(fileInfos);
     window.api.send("toMain", fileInfos);
   }
   dropZone.classList.remove("dragover");
@@ -54,7 +72,6 @@ document.getElementById("imageSelecter").addEventListener("change", function (ev
       path: file.path,
       type: file.type,
     }));
-    console.log(fileInfos);
     window.api.send("toMain", fileInfos);
   }
 });

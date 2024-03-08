@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog } from "electron";
+import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
 import * as path from "path";
 import convertToWebP from "./coverter";
 import os from "os";
@@ -27,16 +27,20 @@ const handleFileOpen = async () => {
   }
 };
 
+const handleOpenOutputDirectory = () => {
+  shell.openPath(outputDir);
+};
+
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
-    width: 520,
+    width: 560,
     height: 360,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
     },
   });
-  mainWindow.setResizable(false);
+  // mainWindow.setResizable(false);
   outputDir = store.get("outputPath") as string;
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
@@ -48,7 +52,7 @@ const createWindow = () => {
     compressRateLevel = quality;
   });
 
-  ipcMain.on("toMain", (event, data: File[]) => {
+  ipcMain.on("toMain", (event, data: ImageFile[]) => {
     progress = 0;
     let convertSuccess = true;
     const compressRate = 70 + 10 * compressRateLevel;
@@ -67,9 +71,6 @@ const createWindow = () => {
 
     mainWindow.webContents.send("success", data[0].name, data.length, convertSuccess);
   });
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished
@@ -77,6 +78,7 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   ipcMain.handle("presetting:openFileDialog", handleFileOpen);
+  ipcMain.handle("presetting:openOutputDirectory", handleOpenOutputDirectory);
   createWindow();
 });
 

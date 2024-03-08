@@ -2,16 +2,10 @@ import { ipcRenderer, contextBridge } from "electron";
 import path from "path";
 
 contextBridge.exposeInMainWorld("api", {
-  send: (channel: string, data: any) => {
+  send: (channel: string, data: File[]) => {
     const validChannels = ["toMain"];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
-    }
-  },
-  receive: (channel: string, func: any) => {
-    const validChannels = ["fromMain"];
-    if (validChannels.includes(channel)) {
-      ipcRenderer.on(channel, (event, ...args) => func(...args));
     }
   },
   onProgressUpdate: (callback: (value: number) => void) => {
@@ -29,6 +23,7 @@ contextBridge.exposeInMainWorld("direction", {
 });
 
 contextBridge.exposeInMainWorld("presetting", {
+  openOutputDirectory: () => ipcRenderer.invoke("presetting:openOutputDirectory"),
   openFileDialog: () => ipcRenderer.invoke("presetting:openFileDialog"),
   setQuality: (value: string) => ipcRenderer.send("presetting:setQuality", parseInt(value)),
 });
