@@ -39,6 +39,7 @@
   "dependencies": {
     "@types/node": "^20.11.24",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^8.2.0",
     "sharp": "^0.33.2"
   }
 }

@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import * as path from "path";
 import convertToWebP from "./coverter";
 import os from "os";
+import ElectronStore from "electron-store";
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -10,16 +11,18 @@ if (require("electron-squirrel-startup")) {
 let direction = true;
 let progress = 0;
 let outputDir = path.join(os.homedir(), "Downloads");
+const store = new ElectronStore();
 
 const handleFileOpen = async () => {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     title: "PathSelecter",
-    defaultPath: path.join(os.homedir(), "Downloads"),
+    defaultPath: outputDir,
     properties: ["openDirectory", "createDirectory"],
     message: "변환된 이미지 파일의 저장 위치 지정",
   });
   if (!canceled) {
     outputDir = filePaths[0];
+    store.set("outputPath", outputDir);
   }
 };
 
@@ -32,7 +35,7 @@ const createWindow = () => {
       nodeIntegration: true,
     },
   });
-
+  outputDir = store.get("outputPath") as string;
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
@@ -53,9 +56,9 @@ const createWindow = () => {
         convertToWebP(image, direction, outputDir);
         progress++;
         mainWindow.webContents.send("update-counter", (progress / data.length) * 100);
-        console.log(progress);
+        console.log("진행도", progress);
       } catch (e) {
-        console.error(e.message);
+        console.error("main.ts 변환반복 중 오류발생", e.message);
         convertSuccess = false;
       }
     });

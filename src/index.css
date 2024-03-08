@@ -60,6 +60,7 @@ h1 {
 #message {
   font-size: 0.8em;
 }
+
 .progress {
   position: relative;
   height: 8px;
@@ -84,8 +85,15 @@ h1 {
   border: 0;
 }
 
-.setting input#outputDir {
+label.outputLabel {
   position: absolute;
+  left: 10px;
+  top: 10px;
+  padding: 12px;
+  padding-top: 7px;
+}
+
+input#outputDir {
   /* opacity: 0; */
   display: none;
   width: 100%;
@@ -98,8 +106,7 @@ h1 {
   left: 0;
 }
 
-.setting .outputLabel button {
-  position: relative;
+.outputLabel button {
   display: flex;
   justify-content: center;
   width: 90px;
@@ -118,7 +125,7 @@ h1 {
   }
 }
 
-.setting .outputLabel span {
+.outputLabel span {
   text-align: right;
 }
 
@@ -200,6 +207,24 @@ fieldset {
   flex-direction: column;
   gap: 0.5rem;
   align-items: end;
+}
+
+.setting #compressLevel {
+  border: 0;
+  background-color: #e2bfb3;
+  border-radius: 10px;
+  width: 24px;
+  cursor: pointer;
+  margin-left: 6px;
+  margin-right: 3px;
+  color: rgb(77, 77, 77);
+  width: 2.25em;
+  height: 1.25em;
+  appearance: none;
+
+  &:hover {
+    box-shadow: 0 0 0 max(4px, 0.2em) lightgray;
+  }
 }
 
 *,

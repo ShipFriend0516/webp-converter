@@ -20,15 +20,19 @@
           <div id="bar" class="bar"></div>
         </div>
       </div>
+      <label class="outputLabel">
+        <button id="outputDir" role="directory" type="file" webkitdirectory>
+          <span>저장 위치 지정</span>
+        </button>
+      </label>
       <fieldset class="setting">
         <label>
-          <span>Image > WEBP</span>
+          <span id="directionSpan">Image > Webp</span>
           <input id="directionSwitch" role="switch" type="checkbox" checked />
         </label>
-        <label class="outputLabel">
-          <button id="outputDir" role="directory" type="file" webkitdirectory>
-            <span>저장 위치 지정</span>
-          </button>
+        <label>
+          <span>Webp 압축률</span>
+          <button id="compressLevel">중</button>
         </label>
       </fieldset>
     </div>

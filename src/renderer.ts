@@ -9,7 +9,6 @@ declare global {
 }
 
 document.getElementById("outputDir").addEventListener("click", () => {
-  console.log("file path select");
   window.presetting.openFileDialog();
 });
 
@@ -31,11 +30,12 @@ dropZone.addEventListener("drop", (e) => {
   e.preventDefault();
   const files = e.dataTransfer.files;
 
-  if (files) {
+  if (files.length > 0) {
     // 파일의 경로와 이름만 추출하여 별도의 객체로 만듭니다.
     const fileInfos = Array.from(files).map((file) => ({
       name: file.name,
       path: file.path,
+      type: file.type,
     }));
     console.log(fileInfos);
     window.api.send("toMain", fileInfos);
@@ -47,23 +47,29 @@ dropZone.addEventListener("drop", (e) => {
 document.getElementById("imageSelecter").addEventListener("change", function (event: Event) {
   const files = (event.target as HTMLInputElement).files;
 
-  if (files) {
+  if (files.length > 0) {
     // 파일의 경로와 이름만 추출하여 별도의 객체로 만듭니다.
     const fileInfos = Array.from(files).map((file) => ({
       name: file.name,
       path: file.path,
+      type: file.type,
     }));
     console.log(fileInfos);
     window.api.send("toMain", fileInfos);
   }
 });
 
-document.getElementById("directionSwitch").addEventListener("change", async () => {
+// 설정
+const directionSpan = document.getElementById("directionSpan");
+document.getElementById("directionSwitch").addEventListener("change", async (event) => {
+  (event.target as HTMLInputElement).checked
+    ? (directionSpan.innerText = "Image > Webp")
+    : (directionSpan.innerText = "Webp > JPG");
+
   await window.direction.toggle();
 });
 
 const bar = document.getElementById("bar");
-
 window.api.onProgressUpdate((value: number) => {
   bar.style.width = value + "%";
 });
