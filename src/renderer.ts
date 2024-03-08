@@ -14,17 +14,17 @@ document.getElementById("outputDir").addEventListener("click", () => {
 });
 
 const dropZone = document.getElementById("dragPoint");
-
+const dropZoneSpan = document.getElementById("dragPointSpan");
 dropZone.addEventListener("dragover", (e) => {
   e.preventDefault();
   e.dataTransfer.dropEffect = "copy";
   dropZone.classList.add("dragover");
-  dropZone.innerHTML = "이미지를 업로드";
+  dropZoneSpan.innerText = "이미지를 업로드";
 });
 
 dropZone.addEventListener("dragleave", () => {
   dropZone.classList.remove("dragover");
-  dropZone.innerHTML = "클릭하거나 이미지를 드래그&드랍";
+  dropZoneSpan.innerText = "클릭하거나 이미지를 드래그&드랍";
 });
 
 dropZone.addEventListener("drop", (e) => {
@@ -40,6 +40,8 @@ dropZone.addEventListener("drop", (e) => {
     console.log(fileInfos);
     window.api.send("toMain", fileInfos);
   }
+  dropZone.classList.remove("dragover");
+  dropZoneSpan.innerText = "클릭하거나 이미지를 드래그&드랍";
 });
 
 document.getElementById("imageSelecter").addEventListener("change", function (event: Event) {
@@ -70,8 +72,8 @@ const message = document.getElementById("message");
 
 window.api.onSuccess((value: string, length: number, isSuccess: boolean) => {
   if (isSuccess) {
-    message.innerHTML = `이미지 변환 성공 ${
-      length > 1 ? value + "외 " + (length - 1) + "개 이미지 변환됨" : value + " 이미지 변환됨"
+    message.innerHTML = `${
+      length > 1 ? `${value} 외 ${length - 1}개 이미지 변환됨"` : `[${value}] 이미지 변환됨`
     }`;
   } else {
     message.innerHTML = "이미지 변환 실패";
