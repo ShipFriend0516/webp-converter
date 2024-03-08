@@ -9,11 +9,9 @@ function convertToWebP(
 ) {
   try {
     const imagePath: string = image.path;
-    const fileType: string = image.type;
     const fileName: string = image.name;
     let outputFilePath = "";
     // 기본적으로 Direction은 webp로 변환하는 것
-    console.log(fileName, "type", fileType.split("/")[1]);
     const newFileName = fileName.slice(0, -path.extname(fileName).length);
     if (direction) {
       outputFilePath = `${outputFolderPath}/${"converted"}_${newFileName}.webp`;

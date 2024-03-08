@@ -13,6 +13,28 @@ document.getElementById("outputDir").addEventListener("click", () => {
   window.presetting.openFileDialog();
 });
 
+const dropZone = document.getElementById("dragPoint");
+
+dropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "copy";
+});
+
+dropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  const files = e.dataTransfer.files;
+
+  if (files) {
+    // 파일의 경로와 이름만 추출하여 별도의 객체로 만듭니다.
+    const fileInfos = Array.from(files).map((file) => ({
+      name: file.name,
+      path: file.path,
+    }));
+    console.log(fileInfos);
+    window.api.send("toMain", fileInfos);
+  }
+});
+
 document.getElementById("imageSelecter").addEventListener("change", function (event: Event) {
   const files = (event.target as HTMLInputElement).files;
 
@@ -21,7 +43,6 @@ document.getElementById("imageSelecter").addEventListener("change", function (ev
     const fileInfos = Array.from(files).map((file) => ({
       name: file.name,
       path: file.path,
-      type: file.type,
     }));
     console.log(fileInfos);
     window.api.send("toMain", fileInfos);

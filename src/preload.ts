@@ -1,4 +1,5 @@
 import { ipcRenderer, contextBridge } from "electron";
+import path from "path";
 
 contextBridge.exposeInMainWorld("api", {
   send: (channel: string, data: any) => {
@@ -28,11 +29,11 @@ contextBridge.exposeInMainWorld("direction", {
 });
 
 contextBridge.exposeInMainWorld("presetting", {
-  // setOutDir: (channel: string, path: string) => {
-  //   const validChannels = ["presetting"];
-  //   if (validChannels.includes(channel)) {
-  //     ipcRenderer.send(channel, path);
-  //   }
-  // },
   openFileDialog: () => ipcRenderer.invoke("presetting:openFileDialog"),
+});
+
+contextBridge.exposeInMainWorld("file", {
+  startDrag: (fileName: string) => {
+    ipcRenderer.send("ondragstart", path.join(process.cwd(), fileName));
+  },
 });
