@@ -8,9 +8,9 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+app.commandLine.appendSwitch("disable-frame-skipping", "true");
 let direction = true;
-let progress = 0;
-let outputDir = path.join(os.homedir(), "Downloads");
+let outputDir = path.join(os.homedir(), "Downloads"); // default
 let compressRateLevel = 1; // default
 const store = new ElectronStore();
 
@@ -39,6 +39,7 @@ const createWindow = () => {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
     },
+    show: false,
   });
   // mainWindow.setResizable(false);
   outputDir = store.get("outputPath") as string;
@@ -53,7 +54,7 @@ const createWindow = () => {
   });
 
   ipcMain.on("toMain", (event, data: ImageFile[]) => {
-    progress = 0;
+    let progress = 0;
     let convertSuccess = true;
     const compressRate = 70 + 10 * compressRateLevel;
     console.log(`변환 설정 방향:${direction} 저장위치:${outputDir} 압축률:${compressRate}`);
