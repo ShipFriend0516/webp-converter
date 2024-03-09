@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
 import * as path from "path";
-import convertToWebP from "./coverter";
+import convertToWebp from "./convertToWebp";
 import os from "os";
 import ElectronStore from "electron-store";
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -40,8 +40,9 @@ const createWindow = () => {
       nodeIntegration: true,
     },
     show: false,
+    resizable: false,
   });
-  // mainWindow.setResizable(false);
+
   outputDir = store.get("outputPath") as string;
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
@@ -60,7 +61,7 @@ const createWindow = () => {
     console.log(`변환 설정 방향:${direction} 저장위치:${outputDir} 압축률:${compressRate}`);
     data.forEach((image: File) => {
       try {
-        convertToWebP(image, direction, outputDir, compressRate);
+        convertToWebp(image, direction, outputDir, compressRate);
         progress++;
         mainWindow.webContents.send("update-counter", (progress / data.length) * 100);
         console.log("진행도", progress);
@@ -101,9 +102,5 @@ app.on("activate", () => {
 // code. You can also put them in separate files and import them here.
 
 ipcMain.handle("direction:toggle", () => {
-  if (direction) {
-    direction = false;
-  } else {
-    direction = true;
-  }
+  direction = !direction;
 });
