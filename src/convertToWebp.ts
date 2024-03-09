@@ -2,7 +2,7 @@ import sharp from "sharp";
 import os from "os";
 import path from "path";
 
-function convertToWebp(
+function convertToWebP(
   image: File,
   direction = true,
   outputFolderPath = path.join(os.homedir(), "Downloads"),
@@ -32,4 +32,4 @@ function convertToWebp(
   }
 }
 
-export default convertToWebp;
+export default convertToWebP;

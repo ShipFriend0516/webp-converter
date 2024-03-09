@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
 import * as path from "path";
-import convertToWebp from "./convertToWebp";
+import convertToWebp from "./convertToWebP";
 import os from "os";
 import ElectronStore from "electron-store";
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
