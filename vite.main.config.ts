@@ -15,7 +15,8 @@ export default defineConfig((env) => {
         formats: ["cjs"],
       },
       rollupOptions: {
-        external: ["sharp"],
+        // external: ["sharp"],
+        external,
       },
     },
     plugins: [pluginHotRestart("restart")],
