@@ -37,9 +37,14 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@electron/asar": "^3.2.9",
+    "@img/sharp-libvips-darwin-arm64": "^1.0.1",
+    "@npmcli/fs": "^3.1.0",
     "@types/node": "^20.11.24",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.2.0",
-    "sharp": "^0.33.2"
+    "node-addon-api": "^8.0.0",
+    "node-gyp": "^10.0.1",
+    "sharp": "^0.28.0"
   }
 }

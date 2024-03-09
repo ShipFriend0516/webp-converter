@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>ImageToWebp</title>
+    <script type="module" crossorigin src="./assets/index-CQmByT0k.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BS6Un9do.css">
+  </head>
+  <body>
+    <div class="mainWrapper">
+      <div class="titleWrapper">
+        <h1>이미지 변환기</h1>
+        <p id="message">변환할 이미지를 선택해주세요</p>
+      </div>
+      <div class="dragPointWrapper">
+        <div id="dragPoint" class="dragPoint">
+          <input id="imageSelecter" type="file" accept="image/*" multiple />
+          <span id="dragPointSpan">클릭하거나 이미지를 드래그&드랍</span>
+        </div>
+        <div class="progress">
+          <div id="bar" class="bar"></div>
+        </div>
+      </div>
+      <fieldset class="dirSetting">
+        <label class="outputLabel">
+          <button id="outputDir" role="directory" type="file" webkitdirectory>
+            <span>저장 위치 지정</span>
+          </button>
+        </label>
+        <label class="outputLabel">
+          <button id="openOutputDir" role="directory" type="file" webkitdirectory>
+            <span>저장 위치 열기</span>
+          </button>
+        </label>
+      </fieldset>
+      <fieldset class="setting">
+        <label>
+          <span id="directionSpan">Image > Webp</span>
+          <input id="directionSwitch" role="switch" type="checkbox" checked />
+        </label>
+        <label>
+          <span>Webp 압축률</span>
+          <button id="compressLevel" value="1">중</button>
+        </label>
+      </fieldset>
+    </div>
+  </body>
+</html>
