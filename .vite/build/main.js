@@ -78,6 +78,7 @@ const createWindow = () => {
       preload: path__namespace.join(__dirname, "preload.js"),
       nodeIntegration: true
     },
+    autoHideMenuBar: true,
     resizable: false
   });
   if (typeof store.get("outputPath") === "undefined") {

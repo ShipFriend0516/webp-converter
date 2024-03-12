@@ -38,7 +38,7 @@ h1 {
   position: relative;
   color: gray;
   background-color: whitesmoke;
-  padding: 60px 80px;
+  padding: 60px 40px;
   border-radius: 10px;
   border: dotted 2px #e2bfb3;
   text-align: center;
@@ -149,7 +149,7 @@ fieldset.dirSetting label {
 }
 
 .setting #compressLevel {
-  border: 0.5px solid #e2bfb3;
+  border: 0;
   background-color: #e2bfb3;
   border-radius: 1.25em;
 
