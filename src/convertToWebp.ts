@@ -16,11 +16,16 @@ function convertToWebP(
     // 기본적으로 Direction은 webp로 변환하는 것
     const newFileName = fileName.slice(0, -path.extname(fileName).length);
     if (direction) {
+      // Webp로
       outputFilePath = `${outputFolderPath}/${"converted"}_${newFileName}.webp`;
       sharp(imagePath).webp({ quality: compressRate }).toFormat("webp").toFile(outputFilePath);
     } else {
-      outputFilePath = `${outputFolderPath}/${"converted_"}${newFileName}.jpg`;
-      sharp(imagePath).webp({ lossless: true }).toFormat("jpeg").toFile(outputFilePath);
+      // 역방향
+      outputFilePath = `${outputFolderPath}/${"converted"}${newFileName}.jpg`;
+      sharp(imagePath)
+        .jpeg({ quality: 100, chromaSubsampling: "4:4:4" })
+        .toFormat("jpeg")
+        .toFile(outputFilePath);
     }
 
     console.log(`변환 성공! 변환파일: ${outputFilePath}`);

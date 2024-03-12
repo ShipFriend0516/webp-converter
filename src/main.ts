@@ -57,7 +57,7 @@ const createWindow = () => {
   ipcMain.on("toMain", (event, data: ImageFile[]) => {
     let progress = 0;
     let convertSuccess = true;
-    const compressRate = 70 + 10 * compressRateLevel;
+    const compressRate = 60 + 20 * compressRateLevel;
     console.log(`변환 설정 방향:${direction} 저장위치:${outputDir} 압축률:${compressRate}`);
     data.forEach((image: File) => {
       try {
