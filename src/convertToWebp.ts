@@ -52,15 +52,13 @@ function convertToWebp(
         sharp(imagePath).webp({ quality: compressRate }).toFormat("webp").toFile(outputFilePath);
       }
     } else {
-      // jpg로
+      // 역방향
       outputFilePath = `${outputFolderPath}/${"converted"}${newFileName}.jpg`;
-
       sharp(imagePath)
         .jpeg({ quality: 100, chromaSubsampling: "4:4:4" })
         .toFormat("jpeg")
         .toFile(outputFilePath);
     }
-
     // return outputFilePath;
   } catch (error) {
     console.error("변환 도중 오류:", error);

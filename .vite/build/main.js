@@ -1,1 +1,161 @@
-"use strict";const t=require("electron"),g=require("path"),c=require("sharp"),f=require("os"),j=require("electron-store");function q(e){const r=Object.create(null,{[Symbol.toStringTag]:{value:"Module"}});if(e){for(const a in e)if(a!=="default"){const o=Object.getOwnPropertyDescriptor(e,a);Object.defineProperty(r,a,o.get?o:{enumerable:!0,get:()=>e[a]})}}return r.default=e,Object.freeze(r)}const h=q(g);function F(e,r=!0,a=g.join(f.homedir(),"Downloads"),o){try{const n=e.path,p=e.name,l=g.extname(p).toLowerCase();console.log(l);let i="";const u=p.slice(0,-l.length);r?(i=`${a}/converted_${u}.webp`,l===".png"?(console.log("투명도 지원"),c(n).webp({quality:o,alphaQuality:100}).toFormat("webp").toFile(i)):l===".gif"?c(n).metadata().then(b=>b.hasAlpha?c(n,{animated:!0}).webp({quality:o,alphaQuality:100,lossless:!0}).toFile(i):c(n,{animated:!0}).webp({quality:o,lossless:!0}).toFile(i)):(console.log("투명도 미지원"),c(n).webp({quality:o}).toFormat("webp").toFile(i))):(i=`${a}/converted${u}.jpg`,c(n).jpeg({quality:100,chromaSubsampling:"4:4:4"}).toFormat("jpeg").toFile(i))}catch(n){throw console.error("변환 도중 오류:",n),n}}require("electron-squirrel-startup")&&t.app.quit();let w=!0,s=h.join(f.homedir(),"Downloads"),m=1;const d=new j,y=()=>{const e=new t.BrowserWindow({width:560,height:360,webPreferences:{preload:h.join(__dirname,"preload.js"),nodeIntegration:!0},resizable:!1,show:!1});typeof d.get("outputPath")>"u"?s=h.join(f.homedir(),"Downloads"):typeof d.get("outputPath")=="string"&&(s=d.get("outputPath")),e.loadFile(h.join(__dirname,"../renderer/main_window/index.html"));const r=new t.BrowserWindow({width:500,height:300,transparent:!0,frame:!1,alwaysOnTop:!0});r.loadFile("./splash.html"),r.once("show",()=>{e.webContents.once("dom-ready",()=>{e.show(),r.hide(),r.close()})}),t.ipcMain.on("presetting:setQuality",(a,o)=>{m=o}),t.ipcMain.on("toMain",(a,o)=>{let n=0,p=!0;const l=60+15*m;console.log(`변환 설정 방향:${w} 저장위치:${s} 압축률:${l}`),o.forEach(i=>{try{F(i,w,s,l),n++,e.webContents.send("update-counter",n/o.length*100),console.log("진행도",n)}catch(u){console.error("main.ts 변환반복 중 오류발생",u.message),p=!1}}),e.webContents.send("success",o[0].name,o.length,p)})};t.app.whenReady().then(()=>{t.ipcMain.handle("presetting:openFileDialog",D),t.ipcMain.handle("presetting:openOutputDirectory",P),y()});t.app.on("window-all-closed",()=>{process.platform!=="darwin"&&t.app.quit()});t.app.on("activate",()=>{t.BrowserWindow.getAllWindows().length===0&&y()});const D=async()=>{const{canceled:e,filePaths:r}=await t.dialog.showOpenDialog({title:"PathSelecter",defaultPath:s,properties:["openDirectory","createDirectory"],message:"변환된 이미지 파일의 저장 위치 지정"});e||(s=r[0],d.set("outputPath",s))},P=()=>{t.shell.openPath(s)};t.ipcMain.handle("direction:toggle",()=>{w=!w});
+"use strict";
+const electron = require("electron");
+const path = require("path");
+const sharp = require("sharp");
+const os = require("os");
+const ElectronStore = require("electron-store");
+function _interopNamespaceDefault(e) {
+  const n = Object.create(null, { [Symbol.toStringTag]: { value: "Module" } });
+  if (e) {
+    for (const k in e) {
+      if (k !== "default") {
+        const d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: () => e[k]
+        });
+      }
+    }
+  }
+  n.default = e;
+  return Object.freeze(n);
+}
+const path__namespace = /* @__PURE__ */ _interopNamespaceDefault(path);
+function convertToWebp(image, direction2 = true, outputFolderPath = path.join(os.homedir(), "Downloads"), compressRate) {
+  try {
+    const imagePath = image.path;
+    const fileName = image.name;
+    const fileExtension = path.extname(fileName).toLowerCase();
+    console.log(fileExtension);
+    let outputFilePath = "";
+    const newFileName = fileName.slice(0, -fileExtension.length);
+    if (direction2) {
+      outputFilePath = `${outputFolderPath}/${"converted"}_${newFileName}.webp`;
+      if (fileExtension === ".png") {
+        console.log("투명도 지원");
+        sharp(imagePath).webp({ quality: compressRate, alphaQuality: 100 }).toFormat("webp").toFile(outputFilePath);
+      } else if (fileExtension === ".gif") {
+        sharp(imagePath).metadata().then((info) => {
+          const hasTransparency = info.hasAlpha;
+          if (hasTransparency) {
+            return sharp(imagePath, { animated: true }).webp({
+              quality: compressRate,
+              alphaQuality: 100,
+              lossless: true
+            }).toFile(outputFilePath);
+          } else {
+            return sharp(imagePath, { animated: true }).webp({
+              quality: compressRate,
+              lossless: true
+            }).toFile(outputFilePath);
+          }
+        });
+      } else {
+        console.log("투명도 미지원");
+        sharp(imagePath).webp({ quality: compressRate }).toFormat("webp").toFile(outputFilePath);
+      }
+    } else {
+      outputFilePath = `${outputFolderPath}/${"converted"}${newFileName}.jpg`;
+      sharp(imagePath).jpeg({ quality: 100, chromaSubsampling: "4:4:4" }).toFormat("jpeg").toFile(outputFilePath);
+    }
+  } catch (error) {
+    console.error("변환 도중 오류:", error);
+    throw error;
+  }
+}
+if (require("electron-squirrel-startup")) {
+  electron.app.quit();
+}
+let direction = true;
+let outputDir = path__namespace.join(os.homedir(), "Downloads");
+let compressRateLevel = 1;
+const store = new ElectronStore();
+const createWindow = () => {
+  const mainWindow = new electron.BrowserWindow({
+    width: 560,
+    height: 360,
+    webPreferences: {
+      preload: path__namespace.join(__dirname, "preload.js"),
+      nodeIntegration: true
+    },
+    resizable: false,
+    show: false
+  });
+  if (typeof store.get("outputPath") === "undefined") {
+    outputDir = path__namespace.join(os.homedir(), "Downloads");
+  } else if (typeof store.get("outputPath") === "string") {
+    outputDir = store.get("outputPath");
+  }
+  {
+    mainWindow.loadURL("http://localhost:5173");
+  }
+  const splash = new electron.BrowserWindow({
+    width: 500,
+    height: 300,
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true
+  });
+  splash.loadFile("./splash.html");
+  splash.once("show", () => {
+    mainWindow.webContents.once("dom-ready", () => {
+      mainWindow.show();
+      splash.hide();
+      splash.close();
+    });
+  });
+  electron.ipcMain.on("presetting:setQuality", (event, quality) => {
+    compressRateLevel = quality;
+  });
+  electron.ipcMain.on("toMain", (event, data) => {
+    let progress = 0;
+    let convertSuccess = true;
+    const compressRate = 60 + 15 * compressRateLevel;
+    console.log(`변환 설정 방향:${direction} 저장위치:${outputDir} 압축률:${compressRate}`);
+    data.forEach((image) => {
+      try {
+        convertToWebp(image, direction, outputDir, compressRate);
+        progress++;
+        mainWindow.webContents.send("update-counter", progress / data.length * 100);
+        console.log("진행도", progress);
+      } catch (e) {
+        console.error("main.ts 변환반복 중 오류발생", e.message);
+        convertSuccess = false;
+      }
+    });
+    mainWindow.webContents.send("success", data[0].name, data.length, convertSuccess);
+  });
+};
+electron.app.whenReady().then(() => {
+  electron.ipcMain.handle("presetting:openFileDialog", handleFileOpen);
+  electron.ipcMain.handle("presetting:openOutputDirectory", handleOpenOutputDirectory);
+  createWindow();
+});
+electron.app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    electron.app.quit();
+  }
+});
+electron.app.on("activate", () => {
+  if (electron.BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+const handleFileOpen = async () => {
+  const { canceled, filePaths } = await electron.dialog.showOpenDialog({
+    title: "PathSelecter",
+    defaultPath: outputDir,
+    properties: ["openDirectory", "createDirectory"],
+    message: "변환된 이미지 파일의 저장 위치 지정"
+  });
+  if (!canceled) {
+    outputDir = filePaths[0];
+    store.set("outputPath", outputDir);
+  }
+};
+const handleOpenOutputDirectory = () => {
+  electron.shell.openPath(outputDir);
+};
+electron.ipcMain.handle("direction:toggle", () => {
+  direction = !direction;
+});
