@@ -59,7 +59,6 @@ function convertToWebp(
         .toFormat("jpeg")
         .toFile(outputFilePath);
     }
-    // return outputFilePath;
   } catch (error) {
     console.error("변환 도중 오류:", error);
     throw error;

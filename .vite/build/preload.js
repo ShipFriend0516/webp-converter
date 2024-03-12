@@ -1,1 +1,33 @@
-"use strict";const e=require("electron"),s=require("path");e.contextBridge.exposeInMainWorld("api",{send:(n,t)=>{["toMain"].includes(n)&&e.ipcRenderer.send(n,t)},onProgressUpdate:n=>{e.ipcRenderer.on("update-counter",(t,r)=>n(r))},onSuccess:n=>{e.ipcRenderer.on("success",(t,r,i,o)=>n(r,i,o))}});e.contextBridge.exposeInMainWorld("direction",{toggle:()=>e.ipcRenderer.invoke("direction:toggle")});e.contextBridge.exposeInMainWorld("presetting",{openOutputDirectory:()=>e.ipcRenderer.invoke("presetting:openOutputDirectory"),openFileDialog:()=>e.ipcRenderer.invoke("presetting:openFileDialog"),setQuality:n=>e.ipcRenderer.send("presetting:setQuality",parseInt(n))});e.contextBridge.exposeInMainWorld("file",{startDrag:n=>{e.ipcRenderer.send("ondragstart",s.join(process.cwd(),n))}});
+"use strict";
+const electron = require("electron");
+const path = require("path");
+electron.contextBridge.exposeInMainWorld("api", {
+  send: (channel, data) => {
+    const validChannels = ["toMain"];
+    if (validChannels.includes(channel)) {
+      electron.ipcRenderer.send(channel, data);
+    }
+  },
+  onProgressUpdate: (callback) => {
+    electron.ipcRenderer.on("update-counter", (event, value) => callback(value));
+  },
+  onSuccess: (callback) => {
+    electron.ipcRenderer.on(
+      "success",
+      (event, value, length, isSuccess) => callback(value, length, isSuccess)
+    );
+  }
+});
+electron.contextBridge.exposeInMainWorld("direction", {
+  toggle: () => electron.ipcRenderer.invoke("direction:toggle")
+});
+electron.contextBridge.exposeInMainWorld("presetting", {
+  openOutputDirectory: () => electron.ipcRenderer.invoke("presetting:openOutputDirectory"),
+  openFileDialog: () => electron.ipcRenderer.invoke("presetting:openFileDialog"),
+  setQuality: (value) => electron.ipcRenderer.send("presetting:setQuality", parseInt(value))
+});
+electron.contextBridge.exposeInMainWorld("file", {
+  startDrag: (fileName) => {
+    electron.ipcRenderer.send("ondragstart", path.join(process.cwd(), fileName));
+  }
+});
