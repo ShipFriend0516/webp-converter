@@ -23,6 +23,13 @@ declare global {
   }
 }
 
+// Loading
+const loading = document.getElementById("lds-ring");
+
+window.addEventListener("load", () => {
+  loading.style.display = "none";
+});
+
 document.getElementById("outputDir").addEventListener("click", () => {
   window.presetting.openFileDialog();
 });
@@ -78,12 +85,12 @@ document.getElementById("imageSelecter").addEventListener("change", function (ev
 
 // 설정
 const directionSpan = document.getElementById("directionSpan");
-document.getElementById("directionSwitch").addEventListener("change", async (event) => {
+document.getElementById("directionSwitch").addEventListener("change", (event) => {
   (event.target as HTMLInputElement).checked
     ? (directionSpan.innerText = "Image > Webp")
     : (directionSpan.innerText = "Webp > JPG");
 
-  await window.direction.toggle();
+  window.direction.toggle();
 });
 
 const bar = document.getElementById("bar");

@@ -2,7 +2,7 @@ import sharp from "sharp";
 import os from "os";
 import path from "path";
 
-function convertToWebP(
+function convertToWebp(
   image: File,
   direction = true,
   outputFolderPath = path.join(os.homedir(), "Downloads"),
@@ -11,24 +11,55 @@ function convertToWebP(
   try {
     const imagePath: string = image.path;
     const fileName: string = image.name;
-    console.log(image.type);
+    const fileExtension = path.extname(fileName).toLowerCase();
+    console.log(fileExtension);
     let outputFilePath = "";
     // 기본적으로 Direction은 webp로 변환하는 것
-    const newFileName = fileName.slice(0, -path.extname(fileName).length);
+    const newFileName = fileName.slice(0, -fileExtension.length);
     if (direction) {
       // Webp로
       outputFilePath = `${outputFolderPath}/${"converted"}_${newFileName}.webp`;
-      sharp(imagePath).webp({ quality: compressRate }).toFormat("webp").toFile(outputFilePath);
+      if (fileExtension === ".png") {
+        console.log("투명도 지원");
+        sharp(imagePath)
+          .webp({ quality: compressRate, alphaQuality: 100 })
+          .toFormat("webp")
+          .toFile(outputFilePath);
+      } else if (fileExtension === ".gif") {
+        sharp(imagePath)
+          .metadata()
+          .then((info) => {
+            const hasTransparency = info.hasAlpha;
+            if (hasTransparency) {
+              return sharp(imagePath, { animated: true })
+                .webp({
+                  quality: compressRate,
+                  alphaQuality: 100,
+                  lossless: true,
+                })
+                .toFile(outputFilePath);
+            } else {
+              return sharp(imagePath, { animated: true })
+                .webp({
+                  quality: compressRate,
+                  lossless: true,
+                })
+                .toFile(outputFilePath);
+            }
+          });
+      } else {
+        console.log("투명도 미지원");
+        sharp(imagePath).webp({ quality: compressRate }).toFormat("webp").toFile(outputFilePath);
+      }
     } else {
-      // 역방향
+      // jpg로
       outputFilePath = `${outputFolderPath}/${"converted"}${newFileName}.jpg`;
+
       sharp(imagePath)
         .jpeg({ quality: 100, chromaSubsampling: "4:4:4" })
         .toFormat("jpeg")
         .toFile(outputFilePath);
     }
-
-    console.log(`변환 성공! 변환파일: ${outputFilePath}`);
 
     // return outputFilePath;
   } catch (error) {
@@ -37,4 +68,4 @@ function convertToWebP(
   }
 }
 
-export default convertToWebP;
+export default convertToWebp;

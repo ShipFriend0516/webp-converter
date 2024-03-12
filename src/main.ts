@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
 import * as path from "path";
-import convertToWebp from "./convertToWebP";
+import convertToWebp from "./convertToWebp";
 import os from "os";
 import ElectronStore from "electron-store";
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -8,28 +8,10 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
-app.commandLine.appendSwitch("disable-frame-skipping", "true");
 let direction = true;
 let outputDir = path.join(os.homedir(), "Downloads"); // default
 let compressRateLevel = 1; // default
 const store = new ElectronStore();
-
-const handleFileOpen = async () => {
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    title: "PathSelecter",
-    defaultPath: outputDir,
-    properties: ["openDirectory", "createDirectory"],
-    message: "변환된 이미지 파일의 저장 위치 지정",
-  });
-  if (!canceled) {
-    outputDir = filePaths[0];
-    store.set("outputPath", outputDir);
-  }
-};
-
-const handleOpenOutputDirectory = () => {
-  shell.openPath(outputDir);
-};
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
@@ -39,16 +21,36 @@ const createWindow = () => {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
     },
-    show: false,
     resizable: false,
+    show: false,
   });
-
-  outputDir = store.get("outputPath") as string;
+  if (typeof store.get("outputPath") === "undefined") {
+    outputDir = path.join(os.homedir(), "Downloads");
+  } else if (typeof store.get("outputPath") === "string") {
+    outputDir = store.get("outputPath") as string;
+  }
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
+
+  const splash = new BrowserWindow({
+    width: 500,
+    height: 300,
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true,
+  });
+
+  splash.loadFile("./splash.html");
+  splash.once("show", () => {
+    mainWindow.webContents.once("dom-ready", () => {
+      mainWindow.show();
+      splash.hide();
+      splash.close();
+    });
+  });
 
   ipcMain.on("presetting:setQuality", (event, quality: number) => {
     compressRateLevel = quality;
@@ -57,7 +59,7 @@ const createWindow = () => {
   ipcMain.on("toMain", (event, data: ImageFile[]) => {
     let progress = 0;
     let convertSuccess = true;
-    const compressRate = 60 + 20 * compressRateLevel;
+    const compressRate = 60 + 15 * compressRateLevel;
     console.log(`변환 설정 방향:${direction} 저장위치:${outputDir} 압축률:${compressRate}`);
     data.forEach((image: File) => {
       try {
@@ -100,6 +102,22 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+const handleFileOpen = async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    title: "PathSelecter",
+    defaultPath: outputDir,
+    properties: ["openDirectory", "createDirectory"],
+    message: "변환된 이미지 파일의 저장 위치 지정",
+  });
+  if (!canceled) {
+    outputDir = filePaths[0];
+    store.set("outputPath", outputDir);
+  }
+};
+
+const handleOpenOutputDirectory = () => {
+  shell.openPath(outputDir);
+};
 
 ipcMain.handle("direction:toggle", () => {
   direction = !direction;
