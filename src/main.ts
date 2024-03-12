@@ -22,7 +22,6 @@ const createWindow = () => {
       nodeIntegration: true,
     },
     resizable: false,
-    show: false,
   });
   if (typeof store.get("outputPath") === "undefined") {
     outputDir = path.join(os.homedir(), "Downloads");
@@ -35,22 +34,7 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
-  const splash = new BrowserWindow({
-    width: 500,
-    height: 300,
-    transparent: true,
-    frame: false,
-    alwaysOnTop: true,
-  });
 
-  splash.loadFile("./splash.html");
-  splash.once("show", () => {
-    mainWindow.webContents.once("dom-ready", () => {
-      mainWindow.show();
-      splash.hide();
-      splash.close();
-    });
-  });
 
   ipcMain.on("presetting:setQuality", (event, quality: number) => {
     compressRateLevel = quality;

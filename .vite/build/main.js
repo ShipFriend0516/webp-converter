@@ -78,8 +78,7 @@ const createWindow = () => {
       preload: path__namespace.join(__dirname, "preload.js"),
       nodeIntegration: true
     },
-    resizable: false,
-    show: false
+    resizable: false
   });
   if (typeof store.get("outputPath") === "undefined") {
     outputDir = path__namespace.join(os.homedir(), "Downloads");
@@ -89,21 +88,6 @@ const createWindow = () => {
   {
     mainWindow.loadURL("http://localhost:5173");
   }
-  const splash = new electron.BrowserWindow({
-    width: 500,
-    height: 300,
-    transparent: true,
-    frame: false,
-    alwaysOnTop: true
-  });
-  splash.loadFile("./splash.html");
-  splash.once("show", () => {
-    mainWindow.webContents.once("dom-ready", () => {
-      mainWindow.show();
-      splash.hide();
-      splash.close();
-    });
-  });
   electron.ipcMain.on("presetting:setQuality", (event, quality) => {
     compressRateLevel = quality;
   });
