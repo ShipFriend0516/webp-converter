@@ -87,7 +87,7 @@ const createWindow = () => {
     outputDir = store.get("outputPath");
   }
   {
-    mainWindow.loadURL("http://localhost:5173");
+    mainWindow.loadURL("http://localhost:5174");
   }
   electron.ipcMain.on("presetting:setQuality", (event, quality) => {
     compressRateLevel = quality;
